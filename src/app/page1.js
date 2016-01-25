@@ -62,7 +62,7 @@ var Form=React.createClass({
                         />
                     <input
                         type='text'
-                        placeholder='请输入评论'
+                        placeholder='请输入评论aaa'
                         value={this.state.text}
                         onChange={this.getText}
                         />

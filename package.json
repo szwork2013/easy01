@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "hot": "webpack-dev-server --content-base public/app/ --hot  --devtool eval --progress --colors",
-    "pubish": "webpack -p",
+    "hot": "webpack-dev-server --content-base public/ --hot  --devtool eval --progress --colors",
+    "pub": "webpack",
     "dev": "webpack -d -w"
   },
   "repository": {

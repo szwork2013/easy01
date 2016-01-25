@@ -8,10 +8,11 @@ var path=require('path');
 var ExtractTextPlugin=require('extract-text-webpack-plugin');
 //提取根据模板动态打包html文件
 var HtmlWebpackPlugin=require('html-webpack-plugin');
-//debug=true,为开发包，false为发布包
-var debug=false;
+//debug=false,为开发包，false为发布包
+var debug=true;
 var entryConfig=[];
 var output={};
+var plugin=[];
 if(debug){
      entryConfig=[
         'webpack/hot/dev-server',
@@ -19,20 +20,77 @@ if(debug){
         './src/app/home.js'
      ];
     output={
-        path: path.join(__dirname,"/public/"),
-        publicPath: "/",
-        filename: "app/build/js/app.js"
-    }
+        path: path.join(__dirname,"/public/app/build/"),
+        publicPath: "http://localhost:3000/app/build/",
+        filename: "js/app.js"
+    };
+    plugin=[
+        new webpack.optimize.CommonsChunkPlugin('js/comment.js'),
+        new ExtractTextPlugin('css/[name].css',{allChunks:true}),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            "window.jQuery": "jquery"
+        }),
+        new HtmlWebpackPlugin({
+            title:'EASY',
+            favicon:'./src/app/img/icon/easy.ico',
+            filename:'/view/index.html',
+            template:'./src/app/view/index.html',
+            inject:true,
+            hash:true,
+            minify:{
+                removeComments:true,
+                collapseWhitespace:false
+            }
+        }),
+        new webpack.optimize.UglifyJsPlugin({    //压缩代码
+            compress: {
+                warnings: false
+            },
+            except: ['$super', '$', 'exports', 'require']    //排除关键字
+        })
+    ]
 }else{
      entryConfig=[
          './src/app/home.js'
      ];
     output={
         path: path.join(__dirname,"/public/app/assets/"),
-        publicPath: "/app/assets/",
+        publicPath: "http://localhost:3000/app/assets/",
         filename: "js/app.js",
         chunkFilename:'js/[id].chunk.js'
-    }
+    };
+    plugin=[
+
+        new webpack.optimize.CommonsChunkPlugin('js/comment.js'),
+        new ExtractTextPlugin('css/[name].css',{allChunks:true}),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            "window.jQuery": "jquery"
+        }),
+        new webpack.optimize.UglifyJsPlugin({    //压缩代码
+            compress: {
+                warnings: false
+            },
+            except: ['$super', '$', 'exports', 'require']    //排除关键字
+        }),
+        new HtmlWebpackPlugin({
+            title:'EASY',
+            favicon:'./src/app/img/icon/easy.ico',
+            filename:'/view/index.html',
+            template:'./src/app/view/index.html',
+            inject:true,
+            hash:true,
+            minify:{
+                removeComments:true,
+                collapseWhitespace:true
+            }
+        })
+    ]
 }
 
 module.exports={
@@ -56,7 +114,7 @@ module.exports={
                     presets: ['react', 'es2015']
                 }
             },
-            { test: /\.(png|jpg|gif|jpeg|svg|eot|woff2|woff|ttf|ico)$/, loader: "url-loader?limit=10000&name=app/build/img/[hash:8].[name].[ext]" }
+            { test: /\.(png|jpg|gif|jpeg|svg|eot|woff2|woff|ttf|ico)$/, loader: "url-loader?limit=10000&name=img/[hash:8].[name].[ext]" }
         ]
     },
     resolve:{
@@ -68,25 +126,5 @@ module.exports={
             appImg:root+'images/'
         }
     },
-    plugins: [
-        new webpack.optimize.CommonsChunkPlugin('app/build/js/comment.js'),
-        new ExtractTextPlugin('app/build/css/[name].css',{allChunks:true}),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery"
-        }),
-        new HtmlWebpackPlugin({
-            favicon:'./src/app/img/icon/easy.ico',
-            filename:'app/build/view/index.html',
-            template:'./src/app/view/index.html',
-            inject:true,
-            hash:true,
-            minify:{
-                removeComments:true,
-                collapseWhitespace:false
-            }
-        })
-    ]
+    plugins: plugin
 }
