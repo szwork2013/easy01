@@ -4,5 +4,4 @@ webpack -d -w
 webpack -p
 #hot 服务   在easy目录中使用命令 npm run hot /npm run-script hot
 webpack-dev-server --content-base public/ --hot --inline --devtool eval --progress --colors
-#git test
-
+#
