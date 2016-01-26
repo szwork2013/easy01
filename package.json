@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "hot": "webpack-dev-server --content-base public/ --hot  --devtool eval --progress --colors",
-    "pub": "webpack",
-    "dev": "webpack -d -w"
+    "hot": "webpack-dev-server --content-base public/  --inline  --devtool eval --progress --colors",
+    "apppub": "webpack --config webpack.app.config.js",
+    "appdev": "webpack --config webpack.app.config.js -d -w",
+    "pcpub": "webpack --config webpack.pc.config.js",
+    "pcdev": "webpack --config webpack.pc.config.js -d -w"
   },
   "repository": {
     "type": "git",

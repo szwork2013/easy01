@@ -11,7 +11,7 @@ global.db=require('./db/dbHandler');
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'public/admin/view'));
+app.set('views', path.join(__dirname, 'public/'));
 app.engine('.html', require('ejs').__express);  
 app.set('view engine', 'html'); 
 

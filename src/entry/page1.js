@@ -1,7 +1,24 @@
 /**
  * Created by Administrator on 2016/1/23 0023.
  */
+var getMixin={
+        getText:function(key){
+            /*
+            * 1、js中this不能传递到子函数中
+            * 2、js中不是这样给变量key赋值{key：value}，因为js把它作为一个字符串处理
+            * */
+            var that = this;
+            var state={};//形成闭包，减少内存开销
+            return function(event){
+
+                state[key]=event.target.value;
+                that.setState(state);
+                //this.setState(state);
+            }
+        }
+    };
 var React=require('react');
+//var addons=require('../../node_modules/react/dist/react-with-addons');
 var Comment=React.createClass({
     render:function(){
         return(
@@ -31,14 +48,10 @@ var List=React.createClass({
 
 });
 var Form=React.createClass({
+    mixins:[getMixin],
+    //mixins:[addons.LinkedStateMixin],
     getInitialState:function(){
         return {author:'',text:''}
-    },
-    getAuthor:function(e){
-        this.setState({author:e.target.value})
-    },
-    getText:function(e){
-        this.setState({text:e.target.value})
     },
     handleSubmit:function(e){
         e.preventDefault();
@@ -48,6 +61,7 @@ var Form=React.createClass({
         if(!author||!text){
             return;
         }
+        console.log(this.state);
         this.props.onHandlerCommit({author:author,text:text});
         this.setState({author:'',text:''});
     },
@@ -58,15 +72,19 @@ var Form=React.createClass({
                         type='text'
                         placeholder='请输入用户名'
                         value={this.state.author}
-                        onChange={this.getAuthor}
+                        //valueLink={linkState('author')}
+                        onChange={this.getText('author')}
                         />
                     <input
                         type='text'
                         placeholder='请输入评论aaa'
                         value={this.state.text}
-                        onChange={this.getText}
+                        onChange={this.getText('text')}
+                        //valuLink={this.linkState('text')}
                         />
                     <input type='submit' value="提交"/>
+                    <p>{this.state.author}</p>
+                    <p>{this.state.text}</p>
                 </form>
 
             )

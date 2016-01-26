@@ -8,16 +8,17 @@ var path=require('path');
 var ExtractTextPlugin=require('extract-text-webpack-plugin');
 //提取根据模板动态打包html文件
 var HtmlWebpackPlugin=require('html-webpack-plugin');
-//debug=false,为开发包，false为发布包
+
 var debug=true;
+var url='http://localhost:3000';
 var entryConfig=[];
 var output={};
 var plugin=[];
 if(debug){
-     entryConfig=[
+    entryConfig=[
         'webpack/hot/dev-server',
         'webpack-dev-server/client?http://localhost:8080/',
-        './src/app/home.js'
+        './src/entry/app/home.js'
      ];
     output={
         path: path.join(__dirname,"/public/app/build/"),
@@ -25,9 +26,9 @@ if(debug){
         filename: "js/app.js"
     };
     plugin=[
+        new webpack.HotModuleReplacementPlugin(),
         new webpack.optimize.CommonsChunkPlugin('js/comment.js'),
         new ExtractTextPlugin('css/[name].css',{allChunks:true}),
-        new webpack.HotModuleReplacementPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
@@ -35,38 +36,30 @@ if(debug){
         }),
         new HtmlWebpackPlugin({
             title:'EASY',
-            favicon:'./src/app/img/icon/easy.ico',
+            favicon:'./src/img/icon/easy.ico',
             filename:'/view/index.html',
-            template:'./src/app/view/index.html',
+            template:'./src/view/app/index.html',
             inject:true,
             hash:true,
             minify:{
                 removeComments:true,
                 collapseWhitespace:false
             }
-        }),
-        new webpack.optimize.UglifyJsPlugin({    //压缩代码
-            compress: {
-                warnings: false
-            },
-            except: ['$super', '$', 'exports', 'require']    //排除关键字
         })
     ]
 }else{
-     entryConfig=[
-         './src/app/home.js'
+    entryConfig=[
+         './src/entry/app/home.js'
      ];
     output={
         path: path.join(__dirname,"/public/app/assets/"),
-        publicPath: "http://localhost:3000/app/assets/",
+        publicPath: url+"/app/assets/",
         filename: "js/app.js",
         chunkFilename:'js/[id].chunk.js'
     };
     plugin=[
-
         new webpack.optimize.CommonsChunkPlugin('js/comment.js'),
         new ExtractTextPlugin('css/[name].css',{allChunks:true}),
-        new webpack.HotModuleReplacementPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
@@ -80,9 +73,9 @@ if(debug){
         }),
         new HtmlWebpackPlugin({
             title:'EASY',
-            favicon:'./src/app/img/icon/easy.ico',
+            favicon:'./src/img/icon/easy.ico',
             filename:'/view/index.html',
-            template:'./src/app/view/index.html',
+            template:'./src/view/app/index.html',
             inject:true,
             hash:true,
             minify:{
@@ -121,9 +114,12 @@ module.exports={
         root:[__dirname+'/src',__dirname+'/node_modules'],
         extensions:['','.js','.json','.css','.scss','.ejs','.png','.jpg'],
         alias:{
-            appType:root+'style/',
-            appJs:root+'js/',
-            appImg:root+'images/'
+            cssPath:__dirname+'/src/css',
+            jsPath:__dirname+'/src/img',
+            imgPath:__dirname+'/src/js',
+            htmPath:__dirname+'/src/view',
+            libPath:__dirname+'/src/lib',
+            modules:"../../../node_modules"
         }
     },
     plugins: plugin
